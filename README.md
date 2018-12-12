@@ -31,7 +31,7 @@ Both endpoints support *language* and *framework* parameters to specify the Hipt
  - Selenium IDE
  - Javascript (qUnit / Jasmine)
 
- Defaults to **ruby* and **rspec**.
+ Defaults to **ruby** and **rspec**.
 
 ## Authors
 
