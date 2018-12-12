@@ -22,7 +22,7 @@ post '/parse_xml' do
   begin
     halt 500, 'XML cannot be blank' if params[:xml].nil? || params[:xml].strip.empty?
 
-    create_and_return_results(params[:xml])
+    create_and_return_results(params[:xml], params[:language] || 'ruby', params[:framework] || 'rspec')
   rescue StandardError => exception
     handle_exception(exception)
   end
@@ -44,7 +44,7 @@ post '/parse' do
     parsed_script = GherkinScriptParser.new(params[:script])
     hiptest_xml = HiptestPublisherXMLFormatter.format(parsed_script)
 
-    create_and_return_results(hiptest_xml)
+    create_and_return_results(hiptest_xml, params[:language] || 'ruby', params[:framework] || 'rspec')
   rescue StandardError => exception
     handle_exception(exception)
   end
@@ -60,10 +60,10 @@ end
 # runs our hiptest publisher, zips the output
 # and sends the response back.
 #
-def create_and_return_results(xml_data)
+def create_and_return_results(xml_data, language, framework)
   xml_file = generate_xml_tempfile(xml_data)
   Dir.mktmpdir do |dir|
-    run_hiptest_publisher(xml_file, dir)
+    run_hiptest_publisher(xml_file, dir, language, framework)
     zip = zip_hiptest_publisher_results(dir)
     send_response(zip)
   end
@@ -85,7 +85,7 @@ end
 # Run our hiptest publisher with the xml file and output
 # directory.
 #
-def run_hiptest_publisher(xml_file, dir, language = 'ruby', framework = 'rspec')
+def run_hiptest_publisher(xml_file, dir, language, framework)
   publisher = Hiptest::Publisher.new(["--xml-file=#{xml_file.path}", "--output-directory=#{dir}", "--language=#{language}", "--framework=#{framework}"])
   publisher.run
 end

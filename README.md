@@ -14,6 +14,25 @@ You can get the application up and going by using Docker or by running `bundle i
 
 The tests are written with [RSpec](https://github.com/rspec/rspec) and can be run by calling `bundle exec rspec`
 
+## Endpoints
+
+There are currently 2 endpoints
+
+* **/parse** - POST request that expects a gherkin script to be passed as the parameter `script`.  Will return a binary octet stream of resulting test framework zip file.
+* **/parse_xml** - POST request that expects a Hiptest formatted XML to be passed as the parameter `xml`.  Will return a binary octet stream of resulting test framework zip file.
+
+Both endpoints support *language* and *framework* parameters to specify the Hiptest Publisher language and framework to export as.  As of right now, Hiptest Publisher supports:
+
+ - Ruby (rspec / minitest)
+ - Cucumber Ruby
+ - Python (unittest)
+ - Java (JUnit / TestNg)
+ - Robot Framework
+ - Selenium IDE
+ - Javascript (qUnit / Jasmine)
+
+ Defaults to **ruby* and **rspec**.
+
 ## Authors
 
 * **Eric Musgrove** - *Initial work* - [Hexawise](https://github.com/Hexawise)
