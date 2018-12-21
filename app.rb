@@ -86,7 +86,9 @@ end
 # directory.
 #
 def run_hiptest_publisher(xml_file, dir, language, framework)
-  publisher = Hiptest::Publisher.new(["--xml-file=#{xml_file.path}", "--output-directory=#{dir}", "--language=#{language}", "--framework=#{framework}"])
+  options = ["--xml-file=#{xml_file.path}", "--output-directory=#{dir}", "--language=#{language}"]
+  options << "--framework=#{framework}" unless framework.empty?
+  publisher = Hiptest::Publisher.new(options)
   publisher.run
 end
 
