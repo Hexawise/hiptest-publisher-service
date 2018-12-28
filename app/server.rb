@@ -1,14 +1,14 @@
 require 'sinatra'
 require "sinatra/reloader" if development?
-also_reload 'lib/*.rb'
+also_reload '../lib/*.rb'
 
 require 'builder'
 require 'hiptest-publisher'
 require 'logger'
 require 'zip'
 
-require './lib/gherkin_script_parser'
-require './lib/hiptest_publisher_xml_formatter'
+require '../lib/gherkin_script_parser'
+require '../lib/hiptest_publisher_xml_formatter'
 
 set :bind, '0.0.0.0'
 set :logger, Logger.new(STDOUT)
