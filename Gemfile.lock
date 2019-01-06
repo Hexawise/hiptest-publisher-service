@@ -32,6 +32,8 @@ GEM
     parseconfig (1.0.8)
     parslet (1.8.2)
     rack (2.0.6)
+    rack-contrib (2.1.0)
+      rack (~> 2.0)
     rack-protection (2.0.4)
       rack
     rack-test (1.1.0)
@@ -80,6 +82,7 @@ DEPENDENCIES
   gherkin (~> 5.1)
   hiptest-publisher (~> 1.16.5)
   rack (~> 2.0.6)
+  rack-contrib (~> 2.1.0)
   rack-test (~> 1.1.0)
   rspec (~> 3.8.0)
   rubyzip (~> 1.2.2)

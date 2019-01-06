@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+# Don't try to run this binary directly. Instead:
+#
+#   * `hiptest-publisher` if installed through rubygems, relying on the rubygem
+#     wrapper
+#
+#   * `bundle exec ruby -I lib bin/hiptest-publisher` if doing hiptest-publisher
+#     development. You can define an alias for this command and run it as if
+#     you were running the gem natively.
+#
+#         alias hiptest-publisher='bundle exec ruby -I lib bin/hiptest-publisher'
+#
+
+require 'ruby_version'
+
+# Ensure ruby version >= 2
+if RubyVersion < '2.1.0'
+  STDERR.puts "hiptest-publisher requires Ruby version >= 2.1.0."
+  STDERR.puts "You are using #{RUBY_ENGINE} #{RUBY_VERSION}."
+  STDERR.puts "Please use a more recent ruby release to run hiptest-publisher."
+  if RubyVersion.is? 2.0
+    STDERR.puts "Official support for Ruby 2.0.0 ended on 2016-02-24"
+  elsif RubyVersion.is? '1.9.3'
+    STDERR.puts "Official support for Ruby 1.9.3 ended on 2015-02-23"
+  elsif RubyVersion.is? '1.9.2'
+    STDERR.puts "Official support for Ruby 1.9.2 ended on 2014-07-31"
+  end
+  exit 1
+end
+
+require 'hiptest-publisher'
+begin
+  require 'pry' # only available in development
+rescue LoadError
+end
+
+Hiptest::Publisher.new(ARGV).run

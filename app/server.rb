@@ -1,17 +1,24 @@
 require 'sinatra'
 require "sinatra/reloader" if development?
-also_reload '../lib/*.rb'
 
 require 'builder'
 require 'hiptest-publisher'
 require 'logger'
 require 'zip'
 
-require '../lib/gherkin_script_parser'
-require '../lib/hiptest_publisher_xml_formatter'
+require File.join(File.dirname(__FILE__), 'gherkin_script_parser')
+require File.join(File.dirname(__FILE__), 'hiptest_publisher_xml_formatter')
 
 set :bind, '0.0.0.0'
 set :logger, Logger.new(STDOUT)
+
+before do
+  if request.body.size > 0
+    request.body.rewind
+    @params = Sinatra::IndifferentHash.new
+    @params.merge!(JSON.parse(request.body.read))
+  end
+end
 
 ##
 # When the user already has a Hiptest XML file
@@ -20,9 +27,9 @@ set :logger, Logger.new(STDOUT)
 #
 post '/parse_xml' do
   begin
-    halt 500, 'XML cannot be blank' if params[:xml].nil? || params[:xml].strip.empty?
+    halt 500, 'XML cannot be blank' if @params[:xml].nil? || @params[:xml].strip.empty?
 
-    create_and_return_results(params[:xml], params[:language] || 'ruby', params[:framework] || 'rspec')
+    create_and_return_results(@params[:xml], @params[:language] || 'ruby', @params[:framework] || 'rspec')
   rescue StandardError => exception
     handle_exception(exception)
   end
@@ -38,13 +45,13 @@ end
 #
 post '/parse' do
   begin
-    halt 500, 'Script cannot be blank' if params[:script].nil? || params[:script].strip.empty?
+    halt 500, 'Script cannot be blank' if @params[:script].nil? || @params[:script].strip.empty?
 
     # Take in the gherkin script and parse it out into a Hiptest Publisher XML format
-    parsed_script = GherkinScriptParser.new(params[:script])
+    parsed_script = GherkinScriptParser.new(@params[:script])
     hiptest_xml = HiptestPublisherXMLFormatter.format(parsed_script)
 
-    create_and_return_results(hiptest_xml, params[:language] || 'ruby', params[:framework] || 'rspec')
+    create_and_return_results(hiptest_xml, @params[:language] || 'ruby', @params[:framework] || 'rspec')
   rescue StandardError => exception
     handle_exception(exception)
   end
@@ -98,9 +105,9 @@ end
 # binary data from the zip file.
 #
 def send_response(zip)
-  response.headers['content_type'] = "application/octet-stream"
+  response.headers['Content-Type'] = "application/octet-stream"
   attachment('result.zip')
-  response.write(zip.string)
+  response.write(Base64.strict_encode64(zip.string))
 end
 
 ##
