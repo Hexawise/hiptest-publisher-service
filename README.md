@@ -21,6 +21,8 @@ There are currently 2 endpoints
 * **/parse** - POST request that expects a gherkin script to be passed as the parameter `script`.  Will return a binary octet stream of resulting test framework zip file.
 * **/parse_xml** - POST request that expects a Hiptest formatted XML to be passed as the parameter `xml`.  Will return a binary octet stream of resulting test framework zip file.
 
+In the case of an error, a response with status code 500 will be returned, with the body containing the error message string.
+
 Both endpoints support *language* and *framework* parameters to specify the Hiptest Publisher language and framework to export as.  As of right now, Hiptest Publisher supports:
 
  - Ruby (rspec / minitest)
