@@ -1,5 +1,7 @@
 require 'sinatra'
 require "sinatra/reloader" if development?
+also_reload File.join(File.dirname(__FILE__), 'gherkin_script_parser')
+also_reload File.join(File.dirname(__FILE__), 'hiptest_publisher_xml_formatter')
 
 require 'builder'
 require 'hiptest-publisher'

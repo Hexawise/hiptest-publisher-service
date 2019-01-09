@@ -1,6 +1,6 @@
 require 'rack'
 require 'rack/contrib'
-require_relative './server'
+require_relative 'server'
 
 set :root, File.dirname(__FILE__)
 

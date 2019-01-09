@@ -21,4 +21,4 @@ ENV PORT 3000
 EXPOSE 3000
 
 # Start the app
-CMD ["ruby", "app.rb"]
+CMD ["rackup", "app/config.ru"]

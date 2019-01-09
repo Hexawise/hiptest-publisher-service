@@ -1,1 +1,3 @@
 docker-compose.yml
+docker-sync.yml
+packaged-template.yaml

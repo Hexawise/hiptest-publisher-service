@@ -4,11 +4,11 @@ The goal of this project is to provide an easy to use interface for the [Hiptest
 
 ## Getting Started
 
-This service makes use of Ruby and Sinatra to provide a light weight web app.
+This service makes use of Ruby and Sinatra to provide a light weight web app which is also compatible with AWS Lambda.
 
 ### Installing
 
-You can get the application up and going by using Docker or by running `bundle install` and then `ruby app.rb`
+You can get the application up and going by using Docker or by running `bundle install` and then `rackup app/config.ru`
 
 ## Running the tests
 
@@ -32,6 +32,31 @@ Both endpoints support *language* and *framework* parameters to specify the Hipt
  - Javascript (qUnit / Jasmine)
 
  Defaults to **ruby** and **rspec**.
+
+## Lambda
+
+This service was designed with the intent to work easily with the AWS Lambda service, and in such, installing it is fairly easy.
+
+First off, you will need to ensure you have the [AWS SAM CLI installed](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
+
+Then, create the deployment package (note: if you don't have a S3 bucket, you need to create one):
+
+```console
+$ sam package \
+     --template-file template.yaml \
+     --output-template-file packaged-template.yaml \
+     --s3-bucket { your-bucket-name }
+```
+
+Finally, deploy out your application:
+
+```console
+sam deploy --template-file packaged-template.yaml \
+     --stack-name { your-stack-name } \
+     --capabilities CAPABILITY_IAM
+```
+
+From there, you can look within [Amazon API Gateway](https://console.aws.amazon.com/apigateway/home) to find your API and get the Invoke URL for a given stage.
 
 ## Authors
 
