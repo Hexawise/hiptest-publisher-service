@@ -3,6 +3,7 @@ require "sinatra/reloader" if development?
 also_reload File.join(File.dirname(__FILE__), 'gherkin_script_parser')
 also_reload File.join(File.dirname(__FILE__), 'hiptest_publisher_xml_formatter')
 
+require 'base64'
 require 'builder'
 require 'hiptest-publisher'
 require 'logger'
@@ -19,6 +20,9 @@ before do
     request.body.rewind
     @params = Sinatra::IndifferentHash.new
     @params.merge!(JSON.parse(request.body.read))
+
+    _parse_base64_encoded_param(:xml)
+    _parse_base64_encoded_param(:script)
   end
 end
 
@@ -109,7 +113,7 @@ end
 def send_response(zip)
   response.headers['Content-Type'] = "application/octet-stream"
   attachment('result.zip')
-  response.write(Base64.strict_encode64(zip.string))
+  response.write(Base64.encode64(zip.string))
 end
 
 ##
@@ -137,4 +141,12 @@ def handle_exception(exception)
   logger.error exception.message
   logger.error exception.backtrace.join("\n")
   halt 500, "There was an error parsing your script: #{exception.message}"
+end
+
+#################################
+## Private
+#################################
+
+def _parse_base64_encoded_param(param_sym)
+  @params[param_sym] = Base64.decode64(@params[param_sym]) if @params[param_sym] && @params[:isBase64Encoded]
 end

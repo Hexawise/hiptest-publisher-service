@@ -13,9 +13,9 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+require 'base64'
 require 'json'
 require 'rack'
-require 'base64'
 
 # Global object that responds to the call method. Stay outside of the handler
 # to take advantage of container reuse
@@ -23,7 +23,7 @@ $app ||= Rack::Builder.parse_file("#{File.dirname(__FILE__)}/app/config.ru").fir
 
 def handler(event:, context:)
   # Check if the body is base64 encoded. If it is, try to decode it
-  if event["isBase64Encoded"]
+  if event['isBase64Encoded']
     body = Base64.decode64(event['body'])
   else
     body = event['body']
@@ -71,11 +71,13 @@ def handler(event:, context:)
       # Required if we use application load balancer instead of API GW
       response["isBase64Encoded"] = false
     end
-  rescue Exception => msg
+  rescue Exception => exception
     # If there is any exception, we return a 500 error with an error message
+    puts exception
+    puts exception.backtrace.join("\n")
     response = {
       "statusCode" => 500,
-      "body" => msg
+      "body" => exception
     }
   end
   # By default, the response serializer will call #to_json for us

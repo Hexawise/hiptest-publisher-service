@@ -23,7 +23,7 @@ There are currently 2 endpoints
 
 In the case of an error, a response with status code 500 will be returned, with the body containing the error message string.
 
-Both endpoints support *language* and *framework* parameters to specify the Hiptest Publisher language and framework to export as.  As of right now, Hiptest Publisher supports:
+Both endpoints support `language` and `framework` parameters to specify the Hiptest Publisher language and framework to export as.  As of right now, Hiptest Publisher supports:
 
  - Ruby (rspec / minitest)
  - Cucumber Ruby
@@ -34,6 +34,8 @@ Both endpoints support *language* and *framework* parameters to specify the Hipt
  - Javascript (qUnit / Jasmine)
 
  Defaults to **ruby** and **rspec**.
+
+The final parameter accepted is `isBase64Encoded`, which tells the server if the content has been Base64 encoded and needs to be decoded prior to parsing it.  This is generally encouraged to ensure that there are no potential parsing errors when POSTing your XML or Gherkin script.  This parameter is optional.
 
 ## Lambda
 
