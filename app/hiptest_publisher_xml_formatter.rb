@@ -92,7 +92,7 @@ class HiptestPublisherXMLFormatter
   # </parameters>
   #
   def self.setup_scenario_datatable_and_parameters(scenario, script_scenario)
-    return unless script_scenario[:type] == :ScenarioOutline && !script_scenario[:examples].nil?
+    return unless script_scenario[:type] == :ScenarioOutline && !script_scenario[:examples].nil? && !script_scenario[:examples][0][:cells].nil?
 
     parameter_name_length = parameter_count_for_examples_table(script_scenario[:examples])
     scenario.datatable do |datatable|
