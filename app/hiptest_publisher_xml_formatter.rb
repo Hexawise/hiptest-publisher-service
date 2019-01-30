@@ -91,8 +91,11 @@ class HiptestPublisherXMLFormatter
   #   ...
   # </parameters>
   #
+  # We also ensure that we're only acting on this if we have an examples table and the examples table has a tableBody
   def self.setup_scenario_datatable_and_parameters(scenario, script_scenario)
-    return unless script_scenario[:type] == :ScenarioOutline && !script_scenario[:examples].nil? && !script_scenario[:examples][0][:cells].nil?
+    return unless script_scenario[:type] == :ScenarioOutline && !script_scenario[:examples].nil? && !script_scenario[:examples][0][:tableBody].nil?
+
+    headers = script_scenario[:examples][0][:tableHeader][:cells].map { |header| header[:value] }
 
     parameter_name_length = parameter_count_for_examples_table(script_scenario[:examples])
     scenario.datatable do |datatable|
@@ -101,7 +104,7 @@ class HiptestPublisherXMLFormatter
           dataset.arguments do |arguments|
             example_row[:cells].each_with_index do |example_cell, index|
               arguments.argument do |argument|
-                argument.name "p#{index + 1}"
+                argument.name headers[index]
                 argument.value do |value|
                   value.stringliteral example_cell[:value]
                 end
@@ -115,7 +118,7 @@ class HiptestPublisherXMLFormatter
     scenario.parameters do |parameters|
       parameter_name_length.times do |index|
         parameters.parameter do |parameter|
-          parameter.name "p#{index + 1}"
+          parameter.name headers[index]
         end
       end
     end
@@ -216,7 +219,15 @@ class HiptestPublisherXMLFormatter
     parameter_index = 0
     scenarios.each do |scenario|
       scenario[:steps].each do |step|
-        step_parameters = parameters_for_step_text(step[:text]).map { parameter_index += 1; "p#{parameter_index}" }
+        step_parameters = parameters_for_step_text(step[:text]).map do |parameter|
+          if scenario[:type] == :ScenarioOutline
+            parameter
+          else
+            parameter_index += 1
+            "p#{parameter_index}"
+          end
+        end
+
         actionwords[format_step_text_for_parameters(step[:text])] ||= step_parameters
       end
     end
