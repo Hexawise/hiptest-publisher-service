@@ -1,3 +1,0 @@
-public function test{{camelize_upper scenario_name}}{{{camelize_upper rendered_children.name}}}{{#if rendered_children.test_snapshot_uid}}Uid{{{camelize_upper rendered_children.test_snapshot_uid}}}{{/if}}() {{#curly}}
-  $this->{{{ camelize_lower scenario_name }}}({{{ join rendered_children.arguments ', ' }}});
-{{/curly}}

@@ -1,0 +1,12 @@
+{{#if has_datasets?}}
+Test Template{{tab}}{{{ normalize_with_spaces rendered_children.name }}}
+
+*** Test Cases ***{{#each node.children.parameters}}{{{ tab }}}{{{ this.children.name}}}{{/each}}
+{{{ rendered_children.datatable }}}
+
+*** Keywords ***
+
+{{{normalize_with_spaces rendered_children.name }}}{{else}}
+*** Test Cases ***
+
+{{{normalize_with_spaces rendered_children.name }}}{{#if rendered_children.uid}} (uid:{{normalize rendered_children.uid}}){{/if}}{{/if}}{{> keyword_body}}
