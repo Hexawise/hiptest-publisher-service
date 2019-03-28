@@ -16,7 +16,7 @@ class GherkinScriptParser
     gherkin_document = parser.parse(script)
 
     @name = gherkin_document[:feature][:name].strip
-    @description = gherkin_document[:feature][:description].strip
+    @description = gherkin_document[:feature][:description]&.strip
     @scenarios = gherkin_document[:feature][:children].map { |child| select_applicable_children(child) }.compact
   end
 
