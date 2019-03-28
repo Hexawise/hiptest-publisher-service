@@ -1,5 +1,6 @@
-PATH
-  remote: vendor/hiptest-publisher
+GIT
+  remote: https://github.com/Hexawise/hiptest-publisher.git
+  revision: f2554c319ae5362df8b8e34e4150163dfbc18989
   specs:
     hiptest-publisher (1.21.0)
       colorize (~> 0.7, >= 0.7.5)
@@ -92,9 +93,6 @@ DEPENDENCIES
   rubyzip (~> 1.2.2)
   sinatra (~> 2.0.4)
   sinatra-contrib (~> 2.0.4)
-
-RUBY VERSION
-   ruby 2.6.2p47
 
 BUNDLED WITH
    1.17.2
