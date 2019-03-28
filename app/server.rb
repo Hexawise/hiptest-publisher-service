@@ -1,5 +1,9 @@
 require 'sinatra'
 require "sinatra/reloader" if development?
+
+set :bind, '0.0.0.0'
+set :port, '3002' if Sinatra::Application.environment == :development
+
 also_reload File.join(File.dirname(__FILE__), 'gherkin_script_parser')
 also_reload File.join(File.dirname(__FILE__), 'hiptest_publisher_xml_formatter')
 
@@ -9,11 +13,10 @@ require 'hiptest-publisher'
 require 'logger'
 require 'zip'
 
-require File.join(File.dirname(__FILE__), 'gherkin_script_parser')
-require File.join(File.dirname(__FILE__), 'hiptest_publisher_xml_formatter')
-
-set :bind, '0.0.0.0'
 set :logger, Logger.new(STDOUT)
+
+require_relative 'gherkin_script_parser'
+require_relative 'hiptest_publisher_xml_formatter'
 
 before do
   if request.body.size > 0
@@ -35,7 +38,7 @@ post '/parse_xml' do
   begin
     halt 500, 'XML cannot be blank' if @params[:xml].nil? || @params[:xml].strip.empty?
 
-    create_and_return_results(@params[:xml], @params[:language] || 'ruby', @params[:framework] || 'rspec')
+    create_and_return_results(@params[:xml], @params[:language] || 'ruby', @params[:framework] || 'rspec', @params[:skipActionwordSignature] || false)
   rescue StandardError => exception
     handle_exception(exception)
   end
@@ -57,7 +60,7 @@ post '/parse' do
     parsed_script = GherkinScriptParser.new(@params[:script])
     hiptest_xml = HiptestPublisherXMLFormatter.format(parsed_script)
 
-    create_and_return_results(hiptest_xml, @params[:language] || 'ruby', @params[:framework] || 'rspec')
+    create_and_return_results(hiptest_xml, @params[:language] || 'ruby', @params[:framework] || 'rspec', @params[:skipActionwordSignature] || false)
   rescue StandardError => exception
     handle_exception(exception)
   end
@@ -73,11 +76,12 @@ end
 # runs our hiptest publisher, zips the output
 # and sends the response back.
 #
-def create_and_return_results(xml_data, language, framework)
+def create_and_return_results(xml_data, language, framework, skip_actionwords_signature)
   xml_file = generate_xml_tempfile(xml_data)
+
   Dir.mktmpdir do |dir|
     run_hiptest_publisher(xml_file, dir, language, framework)
-    zip = zip_hiptest_publisher_results(dir)
+    zip = zip_hiptest_publisher_results(dir, skip_actionwords_signature)
     send_response(zip)
   end
 end
@@ -99,7 +103,7 @@ end
 # directory.
 #
 def run_hiptest_publisher(xml_file, dir, language, framework)
-  options = ["--xml-file=#{xml_file.path}", "--output-directory=#{dir}", "--language=#{language}"]
+  options = ["--xml-file=#{xml_file.path}", "--output-directory=#{dir}", "--language=#{language}", '--no-uids']
   options << "--framework=#{framework}" unless framework.empty?
   publisher = Hiptest::Publisher.new(options)
   publisher.run
@@ -122,13 +126,15 @@ end
 # the current and parent directory pointers)
 # and zip them up.
 #
-def zip_hiptest_publisher_results(dir)
+def zip_hiptest_publisher_results(dir, skip_actionwords_signature)
   entries = Dir.entries(dir) - %w(. ..)
 
   Zip::OutputStream.write_buffer do |stream|
     entries.each do |file_path|
-      stream.put_next_entry(file_path)
-      stream.write IO.read("#{dir}/#{file_path}")
+      unless skip_actionwords_signature && file_path.include?('actionwords_signature.yaml')
+        stream.put_next_entry(file_path)
+        stream.write IO.read("#{dir}/#{file_path}")
+      end
     end
   end
 end

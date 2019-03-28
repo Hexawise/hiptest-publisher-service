@@ -18,24 +18,26 @@ The tests are written with [RSpec](https://github.com/rspec/rspec) and can be ru
 
 There are currently 2 endpoints
 
-* **/parse** - POST request that expects a gherkin script to be passed as the parameter `script`.  Will return a binary octet stream of resulting test framework zip file.
-* **/parse_xml** - POST request that expects a Hiptest formatted XML to be passed as the parameter `xml`.  Will return a binary octet stream of resulting test framework zip file.
+- **/parse** - POST request that expects a gherkin script to be passed as the parameter `script`. Will return a binary octet stream of resulting test framework zip file.
+- **/parse_xml** - POST request that expects a Hiptest formatted XML to be passed as the parameter `xml`. Will return a binary octet stream of resulting test framework zip file.
 
 In the case of an error, a response with status code 500 will be returned, with the body containing the error message string.
 
-Both endpoints support `language` and `framework` parameters to specify the Hiptest Publisher language and framework to export as.  As of right now, Hiptest Publisher supports:
+Both endpoints support `language` and `framework` parameters to specify the Hiptest Publisher language and framework to export as. As of right now, Hiptest Publisher supports:
 
- - Ruby (rspec / minitest)
- - Cucumber Ruby
- - Python (unittest)
- - Java (JUnit / TestNg)
- - Robot Framework
- - Selenium IDE
- - Javascript (qUnit / Jasmine)
+- Ruby (rspec / minitest)
+- Cucumber Ruby
+- Python (unittest)
+- Java (JUnit / TestNg)
+- Robot Framework
+- Selenium IDE
+- Javascript (qUnit / Jasmine)
 
- Defaults to **ruby** and **rspec**.
+Defaults to **ruby** and **rspec**.
 
-The final parameter accepted is `isBase64Encoded`, which tells the server if the content has been Base64 encoded and needs to be decoded prior to parsing it.  This is generally encouraged to ensure that there are no potential parsing errors when POSTing your XML or Gherkin script.  This parameter is optional.
+Part of the export includes a file, `actionwords_signature.yaml`, which is utilized by the Hiptest service itself. If you want to exclude that, you can pass the `skipActionwordSignature` parameter. This defaults to **false**.
+
+The final parameter accepted is `isBase64Encoded`, which tells the server if the content has been Base64 encoded and needs to be decoded prior to parsing it. This is generally encouraged to ensure that there are no potential parsing errors when POSTing your XML or Gherkin script. This parameter is optional.
 
 ## Lambda
 
@@ -64,7 +66,7 @@ From there, you can look within [Amazon API Gateway](https://console.aws.amazon.
 
 ## Authors
 
-* **Eric Musgrove** - *Initial work* - [Hexawise](https://github.com/Hexawise)
+- **Eric Musgrove** - _Initial work_ - [Hexawise](https://github.com/Hexawise)
 
 ## License
 

@@ -6,6 +6,13 @@ class HiptestPublisherXMLFormatter
     xml.instruct! :xml, encoding: 'UTF-8'
     xml.project format: '0.1' do |project|
       project.name script.name
+      project.bdd_mode true
+      project.testPlan do |testPlan|
+        testPlan.folder do |folder|
+          folder.name script.name
+          folder.description script.description
+        end
+      end
       project.scenarios do |scenarios|
         script.scenarios.each do |script_scenario|
           scenarios.scenario do |scenario|
@@ -106,7 +113,7 @@ class HiptestPublisherXMLFormatter
               arguments.argument do |argument|
                 argument.name headers[index]
                 argument.value do |value|
-                  value.stringliteral example_cell[:value]
+                  value.stringliteral example_cell[:value].gsub("\n", '\n')
                 end
               end
             end
@@ -254,7 +261,7 @@ class HiptestPublisherXMLFormatter
   # <parameter_name>
   #
   def self.parameters_for_step_text(scenario_step_text)
-    scenario_step_text.scan(/<([^>]+)>/).flatten
+    scenario_step_text.scan(/<([^>]+)>|"([^"]+)"/).flatten.compact
   end
 
   ##
