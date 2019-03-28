@@ -1,0 +1,7 @@
+*** Settings ***
+Resource{{tab}}keywords.txt
+
+*** Test Cases ***
+{{#each rendered_children.tests}}
+{{this}}
+{{/each}}
