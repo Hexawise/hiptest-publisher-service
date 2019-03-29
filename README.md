@@ -25,13 +25,19 @@ In the case of an error, a response with status code 500 will be returned, with 
 
 Both endpoints support `language` and `framework` parameters to specify the Hiptest Publisher language and framework to export as. As of right now, Hiptest Publisher supports:
 
-- Ruby (rspec / minitest)
-- Cucumber Ruby
-- Python (unittest)
-- Java (JUnit / TestNg)
+- Behat
+- Behave
+- CSharp (Nunit)
+- Cucumber (Groovy, Java, Javascript, Ruby)
+- Groovy (Spock)
+- Java (Espresso / JUnit / TestNg)
+- Javascript (Jasmine, Mocha, Protractor, qUnit)
+- JBehave
+- PHO (PHPUnit, UnitTest)
 - Robot Framework
+- Ruby (MiniTest, RSpec)
 - Selenium IDE
-- Javascript (qUnit / Jasmine)
+- SpecFlow
 
 Defaults to **ruby** and **rspec**.
 

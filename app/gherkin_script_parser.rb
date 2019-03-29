@@ -1,13 +1,13 @@
 require 'gherkin/parser'
 
 class GherkinScriptParser
-  attr_accessor :name, :description, :scenarios
+  attr_accessor :feature, :scenarios
 
   ##
   # Accepts the Gherkin script, returning if the script
   # is nil or blank.  From there we pass it through the
-  # Gherking::Parser, assigning it's name and the
-  # scenarios to instance variables
+  # Gherking::Parser, assigning the feature and scenarios
+  # to instance variables
   #
   def initialize(script)
     return if script.nil? || script&.strip&.empty?
@@ -15,8 +15,7 @@ class GherkinScriptParser
     parser = Gherkin::Parser.new
     gherkin_document = parser.parse(script)
 
-    @name = gherkin_document[:feature][:name].strip
-    @description = gherkin_document[:feature][:description]&.strip
+    @feature = gherkin_document[:feature]
     @scenarios = gherkin_document[:feature][:children].map { |child| select_applicable_children(child) }.compact
   end
 

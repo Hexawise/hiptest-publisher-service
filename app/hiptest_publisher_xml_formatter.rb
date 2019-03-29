@@ -5,18 +5,26 @@ class HiptestPublisherXMLFormatter
     xml = Builder::XmlMarkup.new(indent: 2)
     xml.instruct! :xml, encoding: 'UTF-8'
     xml.project format: '0.1' do |project|
-      project.name script.name
+      project.name script.feature[:name]&.strip
       project.bdd_mode true
       project.testPlan do |testPlan|
         testPlan.folder do |folder|
-          folder.name script.name
-          folder.description script.description
+          folder.name script.feature[:name]&.strip
+          folder.description script.feature[:description]&.strip
+
+          folder.tags do |tags|
+            script.feature[:tags].each do |scriptTag|
+              tags.tag do |tag|
+                tag.key scriptTag[:name]&.strip&.tr('@', '')
+              end
+            end
+          end
         end
       end
       project.scenarios do |scenarios|
         script.scenarios.each do |script_scenario|
           scenarios.scenario do |scenario|
-            scenario.name script_scenario[:name].strip
+            scenario.name script_scenario[:name]&.strip
 
             setup_scenario_tags(scenario, script_scenario)
             setup_scenario_datatable_and_parameters(scenario, script_scenario)
@@ -113,7 +121,11 @@ class HiptestPublisherXMLFormatter
               arguments.argument do |argument|
                 argument.name headers[index]
                 argument.value do |value|
-                  value.stringliteral example_cell[:value].gsub("\n", '\n')
+                  if is_number?(example_cell[:value])
+                    value.numericliteral example_cell[:value]&.strip
+                  else
+                    value.stringliteral example_cell[:value]&.strip.gsub("\n", '\n')
+                  end
                 end
               end
             end
@@ -177,7 +189,7 @@ class HiptestPublisherXMLFormatter
                         template.stringliteral scenario_parameters[index]
                       end
                     else
-                      value.var step_parameter
+                      value.var step_parameter.tr('<>', '')
                     end
                   end
                 end
@@ -207,7 +219,7 @@ class HiptestPublisherXMLFormatter
     scenario.tags do |tags|
       script_scenario[:tags].each do |script_tag|
         tags.tag do |tag|
-          tag.key script_tag[:name]
+          tag.key script_tag[:name]&.strip&.tr('@', '')
         end
       end
     end
@@ -244,24 +256,32 @@ class HiptestPublisherXMLFormatter
 
   ##
   # Accepts the scenario step text for our current step, then
-  # grabs the parameters for it, and removes each parameter such
+  # grabs the parameters for it, and replaces each parameter such
   # that our step text will match a given actionword.
   #
   # the account balance is <account_balance>
   # becomes
-  # the account balance is
+  # the account balance is "<account_balance>"
+  #
+  # also takes into account potential scenarios where a parmeter is
+  # surrounded by quotation marks in the script and replaces double quotations
+  # with a single
+  #
+  # the account balance is "<account_balance>"
+  # becomes
+  # the account balance is ""<account_balance>""
+  # becomes
+  # the account balance is "<account_balance>"
   #
   def self.format_step_text_for_parameters(scenario_step_text)
-    parameters_for_step_text(scenario_step_text).reduce(scenario_step_text) { |step_text, parameter| step_text.gsub(" <#{parameter}>", '') }.strip
+    parameters_for_step_text(scenario_step_text).reduce(scenario_step_text) { |step_text, parameter| step_text.gsub(parameter, "\"#{parameter}\"").gsub("\"\"#{parameter}\"\"", "\"#{parameter}\"") }.strip
   end
 
   ##
-  # Accepts the scenario step text for our current step and searches
-  # for the parameters in the current step that are in the format of
-  # <parameter_name>
+  # Accepts a string and determines if it is actually a number
   #
-  def self.parameters_for_step_text(scenario_step_text)
-    scenario_step_text.scan(/<([^>]+)>|"([^"]+)"/).flatten.compact
+  def self.is_number?(string)
+    true if Float(string) rescue false
   end
 
   ##
@@ -271,5 +291,14 @@ class HiptestPublisherXMLFormatter
   #
   def self.parameter_count_for_examples_table(script_scenario_examples)
     script_scenario_examples[0][:tableHeader][:cells].length
+  end
+
+  ##
+  # Accepts the scenario step text for our current step and searches
+  # for the parameters in the current step that are in the format of
+  # <parameter_name>
+  #
+  def self.parameters_for_step_text(scenario_step_text)
+    scenario_step_text.scan(/(<[^>]+>)/).flatten.compact
   end
 end
