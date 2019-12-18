@@ -1,2 +1,4 @@
 ---
 BUNDLE_FROZEN: "true"
+BUNDLE_CACHE_ALL: "true"
+BUNDLE_PATH: "vendor/bundle"

@@ -1,9 +1,8 @@
 current directory: /development/hiptest-publisher-service/vendor/bundle/ruby/2.5.0/gems/nokogiri-1.10.7/ext/nokogiri
-/home/eric/.rbenv/versions/2.5.5/bin/ruby -r ./siteconf20191218-9275-86p6uu.rb extconf.rb
+/home/eric/.rbenv/versions/2.5.5/bin/ruby -r ./siteconf20191218-26873-1nqr0uf.rb extconf.rb
 checking if the C compiler accepts ... yes
 Building nokogiri using packaged libraries.
 Using mini_portile version 2.4.0
-Ignoring nokogiri-1.8.5 because its extensions are not built. Try: gem pristine nokogiri --version 1.8.5
 checking for gzdopen() in -lz... yes
 checking for iconv... yes
 ************************************************************************
@@ -140,4 +139,4 @@ rm -rf /development/hiptest-publisher-service/vendor/bundle/ruby/2.5.0/gems/noko
 
 current directory: /development/hiptest-publisher-service/vendor/bundle/ruby/2.5.0/gems/nokogiri-1.10.7/ext/nokogiri
 make "DESTDIR=" install
-/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20191218-9275-w6ap44/nokogiri
+/usr/bin/install -c -m 0755 nokogiri.so ./.gem.20191218-26873-1ujvkj7/nokogiri
