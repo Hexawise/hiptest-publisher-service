@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'builder', '~> 3.2.2' # Provide a simple way to create XML markup and data structures. http://builder.rubyforge.org
 gem 'gherkin', '~> 5.1' # Gherkin parser/compiler for Ruby https://github.com/cucumber/gherkin-ruby
-gem 'hiptest-publisher', '~> 1.21.0' # Publisher for Hiptest projects https://github.com/hiptest/hiptest-publisher
+gem 'hiptest-publisher', git: 'https://github.com/Hexawise/hiptest-publisher' #'~> 1.27.1' # Publisher for Hiptest projects https://github.com/hiptest/hiptest-publisher
 gem 'rack', '~> 2.0.6' # a modular Ruby webserver interface http://rack.github.io/
 gem 'rack-contrib', '~> 2.1.0' # Contributed Rack Middleware and Utilities https://github.com/rack/rack-contrib
 gem 'rubyzip', '~> 1.2.2' # Rubyzip is a ruby library for reading and writing zip files. https://github.com/rubyzip/rubyzip
