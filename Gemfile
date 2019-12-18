@@ -11,5 +11,5 @@ gem 'sinatra-contrib', '~> 2.0.4' # Collection of useful Sinatra extensions http
 
 group :test do
   gem 'rack-test', '~> 1.1.0' # Rack::Test is a layer on top of Rack's MockRequest similar to Merb's RequestHelper  https://github.com/rack-test/rack-test
-  gem 'rspec', '~> 3.8.0' # Behaviour Driven Development for Ruby https://github.com/rspec/rspec
+  gem 'rspec', '~> 3.9.0' # Behaviour Driven Development for Ruby https://github.com/rspec/rspec
 end
