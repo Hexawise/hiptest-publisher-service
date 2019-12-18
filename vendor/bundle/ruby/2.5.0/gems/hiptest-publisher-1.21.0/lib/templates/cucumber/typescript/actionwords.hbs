@@ -1,9 +1,0 @@
-import {{#curly}} After, Before, Given, When, Then {{/curly}} from "cucumber";
-import {{#curly}} ActionWords {{/curly}} from 'actionwords';
-
-{{> before_hook}}
-
-{{> after_hook}}
-
-{{#each rendered_children.actionwords}}{{{this}}}
-{{/each}}

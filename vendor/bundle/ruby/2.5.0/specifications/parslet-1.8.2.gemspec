@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.homepage = "http://kschiess.github.io/parslet".freeze
   s.licenses = ["MIT".freeze]
   s.rdoc_options = ["--main".freeze, "README".freeze]
-  s.rubygems_version = "2.7.8".freeze
+  s.rubygems_version = "2.7.6.2".freeze
   s.summary = "Parser construction library with great error reporting in Ruby.".freeze
 
-  s.installed_by_version = "2.7.8" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.7.6.2" if s.respond_to? :installed_by_version
 end

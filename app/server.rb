@@ -1,3 +1,6 @@
+load_paths = Dir["./vendor/bundle/ruby/2.5.0/bundler/gems/**/lib"]
+$LOAD_PATH.unshift(*load_paths)
+
 require 'sinatra'
 require "sinatra/reloader" if development?
 
@@ -12,6 +15,24 @@ require 'builder'
 require 'hiptest-publisher'
 require 'logger'
 require 'zip'
+
+##
+# Overwrite the hiptest-publisher method that tries to get the gem path
+# because it does not work properly in a scenario where the gem is being loaded
+# in a manner that is not a full gem within AWS Lambda
+#
+# Also, set the I18n load paths to match the proper path, since it seems to
+# be set prior to us actively overwriting the below method.
+def hiptest_publisher_path
+  Gem.loaded_specs['hiptest-publisher'].full_gem_path
+rescue
+  Dir.glob("./vendor/bundle/ruby/2.5.0/bundler/gems/hiptest-publisher-*").first
+rescue
+  '.'
+end
+
+I18n.load_path << Dir["#{hiptest_publisher_path}/config/locales/*.yml"]
+I18n.config.available_locales = :en
 
 set :logger, Logger.new(STDOUT)
 
@@ -78,12 +99,12 @@ end
 #
 def create_and_return_results(xml_data, language, framework, skip_actionwords_signature)
   xml_file = generate_xml_tempfile(xml_data)
+  cache_dir = Dir.mktmpdir
+  output_dir = Dir.mktmpdir
 
-  Dir.mktmpdir do |dir|
-    run_hiptest_publisher(xml_file, dir, language, framework)
-    zip = zip_hiptest_publisher_results(dir, skip_actionwords_signature)
-    send_response(zip)
-  end
+  run_hiptest_publisher(xml_file, output_dir, cache_dir, language, framework)
+  zip = zip_hiptest_publisher_results(output_dir, skip_actionwords_signature)
+  send_response(zip)
 end
 
 ##
@@ -102,9 +123,10 @@ end
 # Run our hiptest publisher with the xml file and output
 # directory.
 #
-def run_hiptest_publisher(xml_file, dir, language, framework)
-  options = ["--xml-file=#{xml_file.path}", "--output-directory=#{dir}", "--language=#{language}", '--no-uids']
+def run_hiptest_publisher(xml_file, output_dir, cache_dir, language, framework)
+  options = ["--xml-file=#{xml_file.path}", "--output-directory=#{output_dir}", "--cache-dir=#{cache_dir}", "--language=#{language}", '--no-uids']
   options << "--framework=#{framework}" unless framework.empty?
+
   publisher = Hiptest::Publisher.new(options)
   publisher.run
 end

@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
   s.description = "ParseConfig provides simple parsing of standard configuration files in the form of 'param = value'.  It also supports nested [group] sections.".freeze
   s.email = "derks@datafolklabs.com".freeze
   s.homepage = "http://github.com/datafolklabs/ruby-parseconfig/".freeze
-  s.rubygems_version = "2.7.8".freeze
+  s.rubygems_version = "2.7.6.2".freeze
   s.summary = "Config File Parser for Standard Unix/Linux Type Config Files".freeze
 
-  s.installed_by_version = "2.7.8" if s.respond_to? :installed_by_version
+  s.installed_by_version = "2.7.6.2" if s.respond_to? :installed_by_version
 end
