@@ -149,12 +149,24 @@ end
 # and zip them up.
 #
 def zip_hiptest_publisher_results(dir, skip_actionwords_signature)
-  entries = Dir.entries(dir) - %w(. ..)
-
   Zip::OutputStream.write_buffer do |stream|
-    entries.each do |file_path|
-      unless skip_actionwords_signature && file_path.include?('actionwords_signature.yaml')
-        stream.put_next_entry(file_path)
+    entries = Dir.entries(dir) - %w(. ..)
+    add_files_to_zip(entries, stream, dir, skip_actionwords_signature)
+  end
+end
+
+##
+# Take the stream and file path and place them into the zip stream
+#
+def add_files_to_zip(entries, stream, dir, skip_actionwords_signature, prefix = '')
+  entries.each do |file_path|
+    unless skip_actionwords_signature && file_path.include?('actionwords_signature.yaml')
+      if File.directory?("#{dir}/#{file_path}")
+        new_dir = "#{dir}/#{file_path}"
+        new_entries = Dir.entries(new_dir) - %w(. ..)
+        add_files_to_zip(new_entries, stream, new_dir, skip_actionwords_signature, "#{prefix}#{file_path}/")
+      else
+        stream.put_next_entry("#{prefix}#{file_path}")
         stream.write IO.read("#{dir}/#{file_path}")
       end
     end
