@@ -18,4 +18,4 @@ COPY . $APP_HOME
 RUN bundle install --path vendor/bundle
 
 # Start the app
-CMD ["rackup", "app/config.ru"]
+CMD ["ruby", "app/server.rb"]
