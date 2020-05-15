@@ -1,0 +1,10 @@
+import { After, Before, Given, When, Then, TableDefinition } from "cucumber";
+import { ActionWords } from './actionwords';
+
+let actionWords : ActionWords;
+{{> before_hook}}
+
+{{> after_hook}}
+
+{{#each rendered_children.actionwords as |actionword|}}{{{actionword}}}
+{{/each}}

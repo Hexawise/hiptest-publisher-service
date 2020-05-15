@@ -1,0 +1,35 @@
+*** Settings ***
+Documentation
+{{#comment '... '}}{{#clear_empty_lines}}
+{{{ rendered_children.description}}}
+{{/clear_empty_lines}}{{/comment}}{{#if has_tags?}}
+Default Tags{{tab}}{{{ join rendered_children.tags '\t'}}}
+{{/if}}
+Resource{{tab}}keywords.txt
+{{#unless is_empty?}}
+Test Setup{{tab}}Run Keywords{{tab}}{{join rendered_children.body "\n...         AND      \t"}}
+{{/unless}}
+*** Test Cases ***{{#if datatables_present?}}
+{{#each rendered_children.splitted_scenarios as |scenario|}}
+{{#if scenario.datatable}}{{#each scenario.datasets as |dataset|}}{{normalize_with_spaces dataset.scenario_name}} {{normalize_with_spaces dataset.name}}{{#if dataset.test_snapshot_uid}} (uid:{{normalize dataset.test_snapshot_uid}}){{/if}}{{#indent}}
+{{#if scenario.tags}}[Tags]{{tab}}{{{join scenario.tags "\t"}}}
+{{/if}}[Template]{{tab}}{{normalize_with_spaces dataset.scenario_name}} keyword
+{{join dataset.arguments '\t'}}{{/indent}}
+
+{{/each}}
+{{else}}{{normalize_with_spaces scenario.name}}{{#if scenario.uid}}(uid:{{normalize scenario.uid}}){{/if}}{{#indent}}
+{{#if scenario.tags}}[Tags]{{tab}}{{{join scenario.tags "\t"}}}
+{{/if}}{{join scenario.body '\n'}}{{/indent}}
+{{/if}}{{/each}}
+*** Keywords ***
+
+{{#each rendered_children.splitted_scenarios as |scenario|}}{{#if scenario.datatable}}{{normalize_with_spaces scenario.name}} keyword{{#indent}}
+[Arguments]{{tab}}{{join scenario.parameters '\t'}}
+{{join scenario.body '\n'}}{{/indent}}
+
+{{/if}}{{/each}}{{else}}
+{{#each rendered_children.splitted_scenarios as |scenario|}}
+{{normalize_with_spaces scenario.name}}{{#if scenario.uid}}(uid:{{normalize scenario.uid}}){{/if}}{{#indent}}{{#if scenario.tags}}
+[Tags]{{tab}}{{{ join scenario.tags '\t'}}}{{/if}}
+{{join scenario.body '\n'}}{{/indent}}
+{{/each}}{{/if}}

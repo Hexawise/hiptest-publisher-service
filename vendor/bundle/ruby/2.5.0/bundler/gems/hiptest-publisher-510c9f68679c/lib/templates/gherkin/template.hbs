@@ -1,0 +1,1 @@
+{{#each treated_chunks as |treated_chunk|}}{{#if treated_chunk.is_variable?}}<{{{treated_chunk.raw.children.name}}}>{{else}}{{{ treated_chunk.raw.children.value }}}{{/if}}{{/each}}

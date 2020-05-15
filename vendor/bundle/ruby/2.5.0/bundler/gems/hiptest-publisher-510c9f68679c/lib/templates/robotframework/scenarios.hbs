@@ -1,0 +1,25 @@
+*** Settings ***
+Resource{{tab}}keywords.txt
+
+*** Test Cases ***{{#if datatables_present?}}
+{{#each rendered_children.splitted_scenarios as |scenario|}}
+{{#if scenario.datatable}}{{scenario.name}}{{#indent}}
+[Template]{{tab}}{{scenario.name}} keyword
+{{scenario.datatable}}{{/indent}}
+{{else}}{{normalize_with_spaces scenario.name}}{{#if scenario.uid}} (uid:{{normalize scenario.uid}}){{/if}}{{#indent}}{{#if scenario.tags}}
+[Tags]{{tab}}{{{ join scenario.tags '\t'}}}
+{{/if}}{{join scenario.body '\n'}}{{/indent}}
+{{/if}}{{/each}}
+*** Keywords ***
+
+{{#each rendered_children.splitted_scenarios as |scenario|}}{{#if scenario.datatable}}{{normalize_with_spaces scenario.name}} keyword{{#indent}}
+[Arguments]{{tab}}${__test_name}{{tab}}{{join scenario.parameters '\t'}}
+{{#if scenario.tags}}[Tags]{{tab}}{{{ join scenario.tags '\t'}}}
+{{/if}}{{join scenario.body '\n'}}{{/indent}}
+
+{{/if}}{{/each}}{{else}}
+{{#each rendered_children.splitted_scenarios as |scenario|}}
+{{normalize_with_spaces scenario.name}}{{#if scenario.uid}} (uid:{{normalize scenario.uid}}){{/if}}{{#indent}}{{#if scenario.tags}}
+[Tags]{{tab}}{{{ join scenario.tags '\t'}}}{{/if}}
+{{join scenario.body '\n'}}{{/indent}}
+{{/each}}{{/if}}
