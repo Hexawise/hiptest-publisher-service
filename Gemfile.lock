@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:Hexawise/hiptest-publisher.git
-  revision: 510c9f68679cd65cc722f6e948bab81a754f5c1b
+  revision: 59109a79416d45bcb3cfd116218ea29141e024c5
   specs:
     hiptest-publisher (2.3.0)
       colorize (~> 0.7, >= 0.7.5)
