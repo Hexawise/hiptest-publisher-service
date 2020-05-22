@@ -108,7 +108,7 @@ class HiptestPublisherXMLFormatter
   #
   # We also ensure that we're only acting on this if we have an examples table and the examples table has a tableBody
   def self.setup_scenario_datatable_and_parameters(scenario, script_scenario)
-    return unless script_scenario[:type] == :ScenarioOutline && !script_scenario[:examples].nil? && !script_scenario[:examples][0][:tableBody].nil?
+    return unless script_scenario[:type] == :ScenarioOutline && !script_scenario[:examples].nil? && script_scenario[:examples].any? && !script_scenario[:examples][0][:tableBody].nil?
 
     headers = script_scenario[:examples][0][:tableHeader][:cells].map { |header| header[:value] }
 
