@@ -7,7 +7,7 @@ Resources:
     Properties:
       FunctionName: HiptestPublisher
       Handler: lambda.handler
-      Runtime: ruby2.5
+      Runtime: ruby2.7
       CodeUri: "./"
       MemorySize: 512
       Timeout: 30
