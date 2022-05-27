@@ -33,7 +33,7 @@ GEM
     parseconfig (1.0.8)
     parslet (1.8.2)
     racc (1.5.2)
-    rack (2.1.4)
+    rack (2.1.4.1)
     rack-contrib (2.1.0)
       rack (~> 2.0)
     rack-protection (2.0.8.1)
